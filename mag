@@ -1,0 +1,46 @@
+class Student:
+    def __init__(self, name, surname, courses_in_progress=None, finished_courses=None):
+        self.name = name
+        self.surname = surname
+        self.courses_in_progress = courses_in_progress if courses_in_progress is not None else []
+        self.finished_courses = finished_courses if finished_courses is not None else []
+        self.grades = {}
+
+    def get_average_grade(self):
+        total_grades = sum(sum(grades) for grades in self.grades.values())
+        total_counts = sum(len(grades) for grades in self.grades.values())
+        return round(total_grades / total_counts, 2) if total_counts > 0 else 0
+
+    def __str__(self):
+        avg_grade = self.get_average_grade()
+        courses_in_progress = ', '.join(self.courses_in_progress)
+        finished_courses = ', '.join(self.finished_courses)
+        return f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за домашние задания: {avg_grade}\nКурсы в процессе изучения: {courses_in_progress}\nЗавершенные курсы: {finished_courses}'
+
+    def __lt__(self, other):
+        if not isinstance(other, Student):
+            return NotImplemented
+        return self.get_average_grade() < other.get_average_grade()
+
+class Lecturer(Mentor):
+    def __init__(self, name, surname, courses=None):
+        super().__init__(name, surname, courses)
+        self.grades = {}
+
+    def get_average_grade(self):
+        total_grades = sum(sum(grades) for grades in self.grades.values())
+        total_counts = sum(len(grades) for grades in self.grades.values())
+        return round(total_grades / total_counts, 2) if total_counts > 0 else 0
+
+    def __str__(self):
+        avg_grade = self.get_average_grade()
+        return f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {avg_grade}'
+
+    def __lt__(self, other):
+        if not isinstance(other, Lecturer):
+            return NotImplemented
+        return self.get_average_grade() < other.get_average_grade()
+
+class Reviewer(Mentor):
+    def __str__(self):
+        return f'Имя: {self.name}\nФамилия: {self.surname}'
